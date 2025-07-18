@@ -1,0 +1,30 @@
+<template>
+    <lightning-card title="Top 5 Accounts by Opportunity Amount" icon-name="standard:account">
+        <div class="slds-m-around_medium">
+            <lightning-input 
+                type="number" 
+                label="Show accounts with amount less than" 
+                onchange={handleInputChange}
+                placeholder="e.g. 50000">
+            </lightning-input>
+
+            <template if:true={filteredAccounts}>
+                <ul class="slds-m-top_medium">
+                    <template for:each={filteredAccounts} for:item="acc">
+                        <li key={acc.accountId} class="slds-m-bottom_small">
+                            <strong>{acc.accountName}</strong> — 
+                            <lightning-formatted-number 
+                                value={acc.totalAmount} 
+                                format-style="currency">
+                            </lightning-formatted-number>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+
+            <template if:true={error}>
+                <p class="slds-text-color_error slds-m-top_medium">{errorMessage}</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,31 @@
+<template>
+    <lightning-card title="Accounts">
+        <div class="slds-p-around_medium lgc-bg">
+            <lightning-input
+                type="number"
+                label="Enter Max Account Records Count"
+                placeholder="e.g. 10">
+            </lightning-input>
+
+            <lightning-button
+                variant="brand"
+                label="Get Accounts"
+                title="Get Accounts"
+                onclick={handleClick}
+                class="slds-m-left_x-small">
+            </lightning-button>
+        </div>
+
+        <template if:true={accounts}>
+            <template for:each={accounts} for:item="acc">
+                <div key={acc.Id}>
+                    {acc.Name}
+                </div>
+            </template>
+        </template>
+
+        <template if:true={error}>
+            <p class="slds-text-color_error">Error loading accounts</p>
+        </template>
+    </lightning-card>
+</template>

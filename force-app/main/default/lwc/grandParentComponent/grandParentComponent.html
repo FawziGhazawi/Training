@@ -1,0 +1,10 @@
+<!-- grandParentComponent.html -->
+<template>
+        <lightning-card title="Hierarchy relations" icon-name="utility:gform">
+    <div onparentupdate={handleParentUpdate}>
+        <c-parent-component></c-parent-component>
+        <p>Total Selected: {totalSelections}</p>
+        <button onclick={handleReset}>Reset All</button>
+    </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,25 @@
+<template>
+    <lightning-card title="User Profile Card" icon-name="standard:contact">
+        <div class="slds-p-around_medium">
+            <lightning-combobox
+                name="userSelector"
+                label="Select User"
+                value={selectedUserKey}
+                options={userOptions}
+                onchange={handleUserChange}>
+            </lightning-combobox>
+
+            <div class="slds-box slds-m-top_medium">
+                <p><strong>Name:</strong> {selectedUser.name}</p>
+                <p><strong>Title:</strong> {selectedUser.title}</p>
+                <p><strong>Email:</strong> {selectedUser.email}</p>
+
+                <div class="slds-m-top_medium">
+                    <button class={statusButtonStyle} onclick={toggleStatus}>
+                        {selectedUser.status}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

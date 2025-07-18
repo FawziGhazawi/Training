@@ -1,0 +1,45 @@
+.c-container {
+    padding: 1rem;
+}
+
+.calc-screen {
+    min-height: 50px;
+    width: 100%;
+    background: #f4f6f9;
+    border: 1px solid #d8dde6;
+    border-radius: 4px;
+    text-align: right;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Adjust as needed */
+    gap: 0.5rem;
+    width: 100%;
+}
+
+
+/* 
+.pagelayout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calc-screen {
+    min-height: 50px;
+    width: 100%;
+    background: #f4f6f9;
+    border: 1px solid #d8dde6;
+    border-radius: 4px;
+    text-align: right;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+}
+ */

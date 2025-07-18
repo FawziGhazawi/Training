@@ -1,0 +1,31 @@
+<!-- 
+    This page along with its controller extension class implements a mass delete operation based on
+    selected records in a list view for the Contact sObject. The page can be surfaced as a list view button.
+    If you need to work with other sObjects copy the page and class and change Contact to whatever.
+-->
+<apex:page standardController="Contact" recordSetVar="NOTUSEDBUTNEEDED" extensions="MassDeleteContacts_CX" lightningStylesheets="true">
+
+    <apex:pageBlock >
+
+        <!-- Nothing fancy here - just render appropriate text depening on success or failure of the delete -->
+        <apex:pageBlockSection columns="1">
+            <apex:outputPanel rendered="{!numberRecords = 0}">You have not selected records any for deletion</apex:outputPanel>
+            <apex:outputPanel rendered="{!numberRecords > 0}">
+                You have selected the following {!numberRecords} records for deletion:
+                <apex:pageBlockTable value="{!contacts}" var="c">
+                    <apex:column value="{!c.Id}" />
+                    <apex:column value="{!c.Name}" />
+                </apex:pageBlockTable>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!numberRecords = -1}">All records successfully deleted</apex:outputPanel>
+            <apex:outputPanel rendered="{!numberRecords = -2}">ooops! {!errorMessage}</apex:outputPanel>
+        </apex:pageBlockSection>
+
+        <!-- Show the buttons - only show delete if there is something to delete! -->
+        <apex:form >
+            <apex:commandButton value="Delete" action="{!okDelete}" rendered="{!numberRecords > 0}" />
+            <apex:commandButton value="Cancel" action="{!okCancel}" />
+        </apex:form>
+    </apex:pageBlock>
+
+</apex:page>

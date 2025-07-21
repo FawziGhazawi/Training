@@ -1,0 +1,80 @@
+<template>
+    <lightning-card title="Account Contacts Editor" icon-name="standard:contact">
+        <div class="slds-p-around_medium">
+            <!-- <lightning-combobox
+            name="accSelector"
+            label="Select Account"
+            value={selectedAccKey}
+            options={accOptions}
+            onchange={handleAccChange}>
+        </lightning-combobox> -->
+        
+        <template if:true={styledGridData}>
+            <lightning-tree-grid
+            columns={columns}
+            data={styledGridData}
+            key-field="Id"
+            onrowaction={handleRowAction}
+            class="slds-m-top_medium"
+            ></lightning-tree-grid>
+        </template>
+        
+        <!-- Modal -->
+        <template if:true={isModalOpen}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 class="slds-modal__title">Edit Contact</h2>
+                    </header>
+                    
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-record-edit-form
+                        object-api-name="Contact"
+                        record-id={contactToEdit.Id}
+                        onsubmit={saveContact}
+                        >
+                        <lightning-input
+                        name="FirstName"
+                        label="First Name"
+                        value={contactToEdit.FirstName}
+                        onchange={handleFieldChange}
+                        required>
+                    </lightning-input>
+                    <lightning-input
+                    name="LastName"
+                    label="Last Name"
+                    value={contactToEdit.LastName}
+                    onchange={handleFieldChange}
+                    required>
+                </lightning-input>
+                <lightning-input
+                name="Phone"
+                label="Mobile Number"
+                value={contactToEdit.Phone}
+                onchange={handleFieldChange}>
+            </lightning-input>
+            <lightning-input
+            name="Email"
+            label="Email"
+            type="email"
+            value={contactToEdit.Email}
+            onchange={handleFieldChange}>
+        </lightning-input>
+        
+        <footer class="slds-modal__footer">
+            <lightning-button label="Cancel" onclick={closeModal}></lightning-button>
+            <lightning-button type="submit" variant="brand" label="Save"></lightning-button>
+        </footer>
+    </lightning-record-edit-form>
+</div>
+</div>
+</section>
+<div class="slds-backdrop slds-backdrop_open"></div>
+</template>
+
+<template if:true={error}>
+    <p class="slds-text-color_error">{errorMessage}</p>
+</template>
+</div>
+</lightning-card>
+</template>

@@ -13,39 +13,55 @@ public with sharing class LWCRelatedOppsToAccs {
         WHERE AccountId = :accId
         ORDER BY Amount DESC
         ];    }
-
-@AuraEnabled(cacheable=true)
-    public static List<AccountSummary> getTopAccounts() {
-        List<AggregateResult> results = [
+        
+        @AuraEnabled(cacheable=true)
+        public static List<AccountSummary> getTopAccounts() {
+            List<AggregateResult> results = [
             SELECT AccountId, Account.Name name, SUM(Amount) totalAmount
             FROM Opportunity
             WHERE IsClosed = FALSE AND Amount != null AND AccountId != null
             GROUP BY AccountId, Account.Name
             ORDER BY SUM(Amount) DESC
             LIMIT 5
-        ];
-
-        List<AccountSummary> summaries = new List<AccountSummary>();
-        for (AggregateResult ar : results) {
-            summaries.add(new AccountSummary(
+            ];
+            
+            List<AccountSummary> summaries = new List<AccountSummary>();
+            for (AggregateResult ar : results) {
+                summaries.add(new AccountSummary(
                 (Id)ar.get('AccountId'),
                 (String)ar.get('name'),
                 (Decimal)ar.get('totalAmount')
-            ));
+                ));
+            }
+            return summaries;
         }
-        return summaries;
-    }
-
-    public class AccountSummary {
-        @AuraEnabled public Id accountId;
-        @AuraEnabled public String accountName;
-        @AuraEnabled public Decimal totalAmount;
-
-        public AccountSummary(Id id, String name, Decimal amount) {
-            accountId = id;
-            accountName = name;
-            totalAmount = amount;
+        
+        public class AccountSummary {
+            @AuraEnabled public Id accountId;
+            @AuraEnabled public String accountName;
+            @AuraEnabled public Decimal totalAmount;
+            
+            public AccountSummary(Id id, String name, Decimal amount) {
+                accountId = id;
+                accountName = name;
+                totalAmount = amount;
+            }
         }
-    }
+        
+        @AuraEnabled(cacheable = true)
+        public static List<Contact> getRelatedContacts(Id accId){
+            return [
+            SELECT 
+            Id, FirstName, LastName, Phone , Email 
+            From Contact 
+            WHERE AccountId = : accId
+            ];
+        }
+        
+        @AuraEnabled
+        public static void updateContact(Contact contact) {
+            update contact;
+        }
+        
         
     }

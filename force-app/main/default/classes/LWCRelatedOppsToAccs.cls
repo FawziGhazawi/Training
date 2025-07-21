@@ -64,4 +64,13 @@ public with sharing class LWCRelatedOppsToAccs {
         }
         
         
+        @AuraEnabled(cacheable=true)
+        public static List<SObject> getRecords(String objectApiName, String searchKey) {
+            if (String.isBlank(objectApiName) || String.isBlank(searchKey)) return new List<SObject>();
+            
+            String query = 'SELECT Id, Name FROM ' + String.escapeSingleQuotes(objectApiName) +
+            ' WHERE Name LIKE :searchKey LIMIT 10';
+            return Database.query(query);
+        }
+        
     }

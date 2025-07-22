@@ -73,4 +73,15 @@ public with sharing class LWCRelatedOppsToAccs {
             return Database.query(query);
         }
         
+        @AuraEnabled
+        public static Account createAccount(String accName) {
+            if (String.isBlank(accName)) {
+                throw new AuraHandledException('Account name cannot be empty');
+            }
+            
+            Account acc = new Account(Name = accName);
+            insert acc;
+            return acc;
+        }
+        
     }

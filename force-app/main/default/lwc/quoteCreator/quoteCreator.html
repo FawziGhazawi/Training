@@ -1,0 +1,55 @@
+<template>
+    <template if:true={leaseType}>
+        <lightning-card title="Create Quote" icon-name="standard:attach">
+            <div class="slds-p-around_large">
+                <lightning-record-edit-form object-api-name="Quote__c" onsuccess={handleSuccess}>
+                    
+                    <!-- Common Fields for All Lease Types -->
+                    <lightning-input-field field-name="Opportunity__c" value={recordId} disabled></lightning-input-field>
+                    <lightning-input-field field-name="Name"></lightning-input-field>
+                    <lightning-input-field field-name="Proposed_Start_Date__c"></lightning-input-field>
+                    
+                    
+                    <!-- Office Lease Fields -->
+                    <template if:true={isOffice}>
+                        <lightning-input-field field-name="Proposed_End_Date__c"></lightning-input-field>
+                        <lightning-input-field field-name="Payment_Terms__c"></lightning-input-field>
+                        <lightning-input-field field-name="Grace_Period__c"></lightning-input-field>
+                    </template>
+                    
+                    <!-- Retail Lease Fields -->
+                    <template if:true={isRetail}>
+                        <lightning-input-field field-name="Proposed_End_Date__c"></lightning-input-field>
+                        <lightning-input-field field-name="Payment_Terms__c"></lightning-input-field>
+                        <lightning-input-field field-name="Grace_Period__c"></lightning-input-field>
+                        <lightning-input-field field-name="Retail_Sales_Category__c"></lightning-input-field>
+                    </template>
+                    
+                    <!-- Land Lease Fields -->
+                    <template if:true={isLand}>
+                        <lightning-input-field field-name="Lease_Duration__c" onchange={handleDurationChange}></lightning-input-field>
+                        <lightning-input-field field-name="Rent_Review_Frequency__c"></lightning-input-field>
+                        <lightning-input-field field-name="Payment_Terms__c" value={landPaymentTerms} disabled></lightning-input-field>
+                        
+                        <template if:true={showUpload}>
+                            <div class="slds-m-top_medium">
+                                <label class="slds-form-element__label">Attach Sales Manager Approval </label>
+                                <lightning-file-upload
+                                                label="Upload Approval"
+                                                name="fileUploader"
+                                                accept=".pdf"
+                                                record-id={recordId} 
+                                                multiple="false"
+                                                onuploadfinished={handleUploadFinished}>
+                            </lightning-file-upload>
+                        </div>
+                    </template>
+                </template>
+                
+                <div class="slds-p-around_xx-small"> <lightning-button variant="success" class="slds-m-top_medium" type="submit" label="Create Quote"></lightning-button></div>
+                
+            </lightning-record-edit-form>
+        </div>
+    </lightning-card>
+</template>
+</template>

@@ -1,0 +1,75 @@
+<template>
+    <lightning-card title="Call for Review">
+        <div class="slds-p-around_medium">
+            <lightning-messages></lightning-messages>
+            <!-- Overall Missing Info Description for Work Order -->
+            <lightning-textarea
+                label="Overall Missing Information Description"
+                value={missingInfoDescription}
+                onchange={handleMissingInfoDescriptionChange}
+                max-length="32768"
+                class="slds-m-bottom_medium">
+            </lightning-textarea>
+        
+            <lightning-accordion allow-multiple-sections-open>
+                <template for:each={documentSectionsWithSelection} for:item="section">
+                    <lightning-accordion-section name={section.label} label={section.fullLabel} key={section.label}>
+                        
+                        <!-- Existing Files Section -->
+                        <div class="slds-m-bottom_medium">
+                            <h4 class="slds-text-heading_small slds-m-bottom_small">Existing Files:</h4>
+                            <template if:true={section.files.length}>
+                                <template for:each={section.files} for:item="file">
+                                    <lightning-input
+                                        type="checkbox"
+                                        label={file.Title}
+                                        data-id={file.Id}
+                                        checked={file.isSelected}
+                                        onchange={handleCheckboxChange}
+                                        key={file.Id}>
+                                    </lightning-input>
+                                </template>
+                            </template>
+                            <template if:false={section.files.length}>
+                                <p class="slds-text-color_weak">No existing files found</p>
+                            </template>
+                        </div>
+
+                        <!-- Request New Document Section -->
+                        <div class="slds-m-bottom_medium">
+                            <lightning-input
+                                label="Request new document"
+                                placeholder="Enter document name..."
+                                data-type={section.type}
+                                value={section.inputValue}
+                                onchange={handleRequestInput}
+                                class="slds-m-bottom_small">
+                            </lightning-input>
+
+                        </div>
+
+                        <!-- Section-specific Missing Info -->
+                        <div class="slds-m-bottom_medium">
+                            <lightning-textarea
+                                label={section.label}
+                                placeholder={section.placeholder}
+                                data-section={section.type}
+                                onchange={handleSectionMissingInfoChange}
+                                max-length="32768">
+                            </lightning-textarea>
+
+                        </div>
+                        
+                    </lightning-accordion-section>
+                </template>
+            </lightning-accordion>
+
+            <lightning-button
+                variant="brand"
+                label="Submit Review"
+                onclick={handleSubmit}
+                class="slds-m-top_medium">
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>

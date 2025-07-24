@@ -7,15 +7,20 @@ export default class CallForReviewModal extends LightningElement {
     @api recordId;
     @track documentSections = [];
     @track missingInfoDescription = ''; // Overall missing info description
-    @track requestedDocInputs = {}; // { Account: '...', Contact: '...', WorkOrder: '...' }
-
+    
     selectedFileIds = new Set(); // more efficient for lookups
-    requestedDocs = [];
     
     // Missing info for each section
     accountMissingInfo = '';
     contactMissingInfo = '';
     workOrderMissingInfo = '';
+    
+    // Dynamic document requests for each section
+    @track requestedDocuments = {
+        Account: [],
+        Contact: [],
+        WorkOrder: []
+    };
     
     @wire(getRelatedDocuments, { workOrderId: '$recordId' })
     wiredDocuments({ error, data }) {
@@ -37,26 +42,26 @@ export default class CallForReviewModal extends LightningElement {
         }
     }
     
-get documentSectionsWithSelection() {
-    return this.documentSections.map(section => {
-        const fullLabel = `${section.label} Files`;
-        const placeholder = `Describe missing information for ${section.label} files...`;
-        const inputValue = this.requestedDocInputs[section.type] || '';
+    get documentSectionsWithSelection() {
+        return this.documentSections.map(section => {
+            const fullLabel = `${section.label} Files`;
+            const placeholder = `Describe missing information for ${section.label} files...`;
+            const missingInfoLabel = `Missing Information for ${section.label} Files`;
+            const requestedDocs = this.requestedDocuments[section.type] || [];
 
-        return {
-            ...section,
-            fullLabel,
-            placeholder,
-            inputValue,
-            files: section.files.map(file => ({
-                ...file,
-                isSelected: this.selectedFileIds.has(file.Id)
-            }))
-        };
-    });
-}
-
-
+            return {
+                ...section,
+                fullLabel,
+                placeholder,
+                missingInfoLabel,
+                requestedDocs,
+                files: section.files.map(file => ({
+                    ...file,
+                    isSelected: this.selectedFileIds.has(file.Id)
+                }))
+            };
+        });
+    }
     
     handleMissingInfoDescriptionChange(e) {
         this.missingInfoDescription = e.target.value;
@@ -90,50 +95,130 @@ get documentSectionsWithSelection() {
         this.selectedFileIds = new Set(this.selectedFileIds);
     }
     
-handleRequestInput(e) {
-    const type = e.target.dataset.type;
-    const value = e.target.value;
-    this.requestedDocInputs = {
-        ...this.requestedDocInputs,
-        [type]: value
-    };
-}
-
+    handleAddDocumentInput(e) {
+        const sectionType = e.target.dataset.section;
+        const currentDocs = [...this.requestedDocuments[sectionType]];
+        const newId = `${sectionType}_${Date.now()}_${Math.random()}`;
+        
+        currentDocs.push({
+            id: newId,
+            value: '',
+            label: `Document Request ${currentDocs.length + 1}`
+        });
+        
+        this.requestedDocuments = {
+            ...this.requestedDocuments,
+            [sectionType]: currentDocs
+        };
+        
+        console.log(`Added new document input for ${sectionType}:`, this.requestedDocuments);
+    }
     
-handleSubmit() {
-    const requestedDocs = Object.entries(this.requestedDocInputs)
-        .filter(([type, name]) => name && name.trim())
-        .map(([type, name]) => ({ type, name: name.trim() }));
-
-    console.log("requestedDocs>>>>", requestedDocs);
-
-    const requestedNames = requestedDocs.map(d => d.name);
-    const requestedTypes = requestedDocs.map(d => d.type);
-    const selectedIdsArray = Array.from(this.selectedFileIds);
-
-    submitReview({
-        workOrderId: this.recordId,
-        missingInfoDescription: this.missingInfoDescription,
-        selectedFileIds: selectedIdsArray,
-        requestedFileNames: requestedNames,
-        requestedFileTypes: requestedTypes,
-        accountMissingInfo: this.accountMissingInfo,
-        contactMissingInfo: this.contactMissingInfo,
-        workOrderMissingInfo: this.workOrderMissingInfo
-    }).then(() => {
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'Success',
-            message: 'Review submitted successfully',
-            variant: 'success'
-        }));
-    }).catch(error => {
-        console.error('Error submitting review:', error);
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'Error',
-            message: error.body?.message || 'Failed to submit review',
-            variant: 'error'
-        }));
-    });
-}
-
+    handleRemoveDocumentInput(e) {
+        const sectionType = e.target.dataset.section;
+        const index = parseInt(e.target.dataset.index);
+        const currentDocs = [...this.requestedDocuments[sectionType]];
+        
+        currentDocs.splice(index, 1);
+        
+        // Re-label remaining documents
+        currentDocs.forEach((doc, idx) => {
+            doc.label = `Document Request ${idx + 1}`;
+        });
+        
+        this.requestedDocuments = {
+            ...this.requestedDocuments,
+            [sectionType]: currentDocs
+        };
+        
+        console.log(`Removed document input for ${sectionType}:`, this.requestedDocuments);
+    }
+    
+    handleRequestInputChange(e) {
+        const sectionType = e.target.dataset.section;
+        const index = parseInt(e.target.dataset.index);
+        const value = e.target.value;
+        
+        const currentDocs = [...this.requestedDocuments[sectionType]];
+        currentDocs[index].value = value;
+        
+        this.requestedDocuments = {
+            ...this.requestedDocuments,
+            [sectionType]: currentDocs
+        };
+        
+        console.log(`Updated document input for ${sectionType}[${index}]:`, value);
+    }
+    
+    handleSubmit() {
+        // Collect all requested documents from all sections
+        const allRequestedDocs = [];
+        
+        Object.entries(this.requestedDocuments).forEach(([sectionType, docs]) => {
+            docs.forEach(doc => {
+                if (doc.value && doc.value.trim()) {
+                    allRequestedDocs.push({
+                        name: doc.value.trim(),
+                        type: sectionType
+                    });
+                }
+            });
+        });
+        
+        console.log("All requested docs>>>>", allRequestedDocs);
+        
+        const requestedNames = allRequestedDocs.map(d => d.name);
+        const requestedTypes = allRequestedDocs.map(d => d.type);
+        const selectedIdsArray = Array.from(this.selectedFileIds);
+        
+        // Validation
+        if (selectedIdsArray.length === 0 && requestedNames.length === 0) {
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Warning',
+                message: 'Please select existing files or request new documents',
+                variant: 'warning'
+            }));
+            return;
+        }
+        
+        submitReview({
+            workOrderId: this.recordId,
+            missingInfoDescription: this.missingInfoDescription,
+            selectedFileIds: selectedIdsArray,
+            requestedFileNames: requestedNames,
+            requestedFileTypes: requestedTypes,
+            accountMissingInfo: this.accountMissingInfo,
+            contactMissingInfo: this.contactMissingInfo,
+            workOrderMissingInfo: this.workOrderMissingInfo
+        }).then(() => {
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Success',
+                message: 'Review submitted successfully',
+                variant: 'success'
+            }));
+            
+            // Reset form
+            this.resetForm();
+        }).catch(error => {
+            console.error('Error submitting review:', error);
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Error',
+                message: error.body?.message || 'Failed to submit review',
+                variant: 'error'
+            }));
+        });
+    }
+    
+    resetForm() {
+        this.missingInfoDescription = '';
+        this.accountMissingInfo = '';
+        this.contactMissingInfo = '';
+        this.workOrderMissingInfo = '';
+        this.selectedFileIds = new Set();
+        this.requestedDocuments = {
+            Account: [],
+            Contact: [],
+            WorkOrder: []
+        };
+    }
 }

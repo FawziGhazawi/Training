@@ -1,0 +1,41 @@
+.add-doc-button {
+        transition: all 0.2s ease;
+    }
+    
+    .add-doc-button:hover {
+        transform: scale(1.1);
+    }
+    
+    .document-input-row {
+        background: #f3f3f3;
+        padding: 8px;
+        border-radius: 4px;
+        border-left: 3px solid #1589ee;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    .remove-doc-button {
+        margin-top: 8px;
+        transition: all 0.2s ease;
+    }
+    
+    .remove-doc-button:hover {
+        transform: scale(1.1);
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .slds-accordion__section {
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }

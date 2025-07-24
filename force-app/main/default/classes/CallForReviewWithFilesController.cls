@@ -55,11 +55,11 @@ public with sharing class CallForReviewWithFilesController {
             }
             result.get(type).add(docMap.get(docId));
         }
-        System.debug('result>>>'+result);
+        
         return result;
     }
     
-@AuraEnabled
+    @AuraEnabled
     public static void submitReview(
         Id workOrderId,
         String missingInfoDescription,

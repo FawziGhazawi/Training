@@ -1,0 +1,86 @@
+<template>
+    <lightning-card title="Case Management" icon-name="standard:case">
+        <!-- Header with case count and refresh button -->
+        <div slot="actions">
+            <lightning-button 
+                label="Refresh" 
+                icon-name="utility:refresh" 
+                onclick={handleRefresh}
+                disabled={isLoading}>
+            </lightning-button>
+        </div>
+
+        <!-- Loading spinner -->
+        <template if:true={isLoading}>
+            <div class="slds-is-relative slds-p-around_medium">
+                <lightning-spinner 
+                    alternative-text="Loading cases..." 
+                    size="medium">
+                </lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Cases count display -->
+        <div class="slds-p-horizontal_medium slds-p-top_small">
+            <p class="slds-text-body_regular">
+                <lightning-formatted-text 
+                    value={casesCount} 
+                    class="slds-text-heading_small">
+                </lightning-formatted-text>
+                <span class="slds-p-left_x-small">open case(s) found</span>
+            </p>
+        </div>
+
+        <!-- Cases data table -->
+        <template if:true={hasCases}>
+            <div class="slds-p-around_medium">
+                <lightning-datatable
+                    key-field="Id"
+                    data={cases}
+                    columns={columns}
+                    onrowaction={handleRowAction}
+                    hide-checkbox-column="true"
+                    show-row-number-column="true"
+                    resize-column-disabled="false"
+                    sorted-direction="desc"
+                    sorted-by="CreatedDate">
+                </lightning-datatable>
+            </div>
+        </template>
+
+        <!-- No cases message -->
+        <template if:false={hasCases}>
+            <template if:false={isLoading}>
+                <div class="slds-p-around_medium slds-text-align_center">
+                    <lightning-icon 
+                        icon-name="utility:info" 
+                        size="large" 
+                        class="slds-p-bottom_small">
+                    </lightning-icon>
+                    <h3 class="slds-text-heading_medium">No Open Cases Found</h3>
+                    <p class="slds-text-body_regular slds-p-top_small">
+                        Great! All cases are currently closed or there are no cases in the system.
+                    </p>
+                </div>
+            </template>
+        </template>
+
+        <!-- Error message -->
+        <template if:true={error}>
+            <div class="slds-p-around_medium">
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>
+                        <lightning-icon 
+                            icon-name="utility:error" 
+                            size="x-small" 
+                            class="slds-p-right_x-small">
+                        </lightning-icon>
+                        Error Loading Cases
+                    </h2>
+                    <p class="slds-p-top_small">{error.body.message}</p>
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+</template>

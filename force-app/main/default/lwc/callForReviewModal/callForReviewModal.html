@@ -35,29 +35,70 @@
                             </template>
                         </div>
 
-                        <!-- Request New Document Section -->
+                        <!-- Request New Documents Section -->
                         <div class="slds-m-bottom_medium">
-                            <lightning-input
-                                label="Request new document"
-                                placeholder="Enter document name..."
-                                data-type={section.type}
-                                value={section.inputValue}
-                                onchange={handleRequestInput}
-                                class="slds-m-bottom_small">
-                            </lightning-input>
-
+                            <div class="slds-grid slds-grid_align-spread slds-m-bottom_small">
+                                <h4 class="slds-text-heading_small">Request New Documents:</h4>
+                                <lightning-button-icon
+                                    icon-name="utility:add"
+                                    variant="brand"
+                                    alternative-text="Add new document request"
+                                    title="Add new document request"
+                                    size="small"
+                                    data-section={section.type}
+                                    onclick={handleAddDocumentInput}
+                                    class="add-doc-button">
+                                </lightning-button-icon>
+                            </div>
+                            
+                            <!-- Dynamic Document Input Fields -->
+                            <template if:true={section.requestedDocs.length}>
+                                <template for:each={section.requestedDocs} for:item="docInput" for:index="index">
+                                    <div key={docInput.id} class="slds-grid slds-grid_align-spread slds-gutters_small slds-m-bottom_x-small document-input-row">
+                                        <div class="slds-col slds-size_11-of-12">
+                                            <lightning-input
+                                                label={docInput.label}
+                                                placeholder="Enter document name..."
+                                                value={docInput.value}
+                                                data-section={section.type}
+                                                data-index={index}
+                                                onchange={handleRequestInputChange}
+                                                variant="label-hidden">
+                                            </lightning-input>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-12 slds-text-align_center">
+                                            <lightning-button-icon
+                                                icon-name="utility:delete"
+                                                variant="destructive"
+                                                alternative-text="Remove document request"
+                                                title="Remove document request"
+                                                size="small"
+                                                data-section={section.type}
+                                                data-index={index}
+                                                onclick={handleRemoveDocumentInput}
+                                                class="remove-doc-button">
+                                            </lightning-button-icon>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                            
+                            <template if:false={section.requestedDocs.length}>
+                                <p class="slds-text-color_weak slds-text-align_center slds-p-vertical_small">
+                                    Click the + button above to add document requests
+                                </p>
+                            </template>
                         </div>
 
                         <!-- Section-specific Missing Info -->
                         <div class="slds-m-bottom_medium">
                             <lightning-textarea
-                                label={section.label}
+                                label={section.missingInfoLabel}
                                 placeholder={section.placeholder}
                                 data-section={section.type}
                                 onchange={handleSectionMissingInfoChange}
                                 max-length="32768">
                             </lightning-textarea>
-
                         </div>
                         
                     </lightning-accordion-section>
@@ -68,7 +109,7 @@
                 variant="brand"
                 label="Submit Review"
                 onclick={handleSubmit}
-                class="slds-m-top_medium">
+                class="slds-m-top_medium slds-float_right">
             </lightning-button>
         </div>
     </lightning-card>

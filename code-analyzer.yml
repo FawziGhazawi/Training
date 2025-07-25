@@ -1,0 +1,22 @@
+engines:
+  eslint:
+    eslint_config_file: force-app/main/default/lwc/.eslintrc.json
+    file_extensions:
+      javascript:
+        - .js
+      typescript:
+        - .ts
+
+  pmd:
+    # Removed custom_rulesets to use default rules
+    # Add back custom_rulesets once pmd-ruleset.xml is created
+    file_extensions:
+      apex:
+        - .cls
+        - .trigger
+
+  retirejs:
+    severity: LOW
+
+  flow:
+    disable_engine: true

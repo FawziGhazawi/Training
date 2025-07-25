@@ -1,0 +1,177 @@
+<template>
+    <div class="transfer-shares-container">
+        <!-- Transfer Form -->
+        <div class="transfer-form">
+            <div class="form-row">
+                <div class="form-field">
+                    <lightning-combobox
+                    name="transferFrom"
+                    label="Transfer From"
+                    value={transferFrom}
+                    placeholder="Select Transfer From"
+                    options={transferFromOptions}
+                    onchange={handleTransferFromChange}
+                    class="custom-input"
+                    required>
+                </lightning-combobox>
+            </div>
+              <div class="vertical-divider" style="margin-top: 20px;"></div> <!-- 👈 Vertical break line -->
+            <div class="form-field-2">
+                <lightning-combobox
+                name="typeOfShares"
+                label="Type of shares"
+                value={typeOfShares}
+                placeholder="Select Share Type"
+                options={shareTypeOptions}
+                onchange={handleShareTypeChange}
+                class="custom-input"
+                required>
+            </lightning-combobox>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-field">
+            <lightning-combobox
+            name="transferTo"
+            label="Transfer To"
+            value={transferTo}
+            placeholder="Select Transfer To"
+            options={transferToOptions}
+            onchange={handleTransferToChange}
+            class="custom-input"
+            required>
+        </lightning-combobox>
+    </div>
+      <div class="vertical-divider"></div> <!-- 👈 Vertical break line -->      
+
+    <div class="form-field-with-button">
+        <lightning-input
+        type="number"
+        name="numberOfShares"
+        label="No. of shares"
+        value={numberOfShares}
+        onchange={handleSharesNumberChange}
+        placeholder="Enter number of shares"
+        class="custom-input"
+        required>
+    </lightning-input>
+
+</div>  
+  <button class="transfer-button" onclick={handleTransfer}>
+        TRANSFER
+    </button>
+</div>
+</div>
+
+<!-- Corporate Shareholders Section -->
+<div class="shareholders-section">
+    <div class="section-header">
+        <h3>Corporate Shareholders</h3>
+    </div>
+    
+    <table class="shareholders-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Registration Number</th>
+                <th>Country of Issue</th>
+                <th>Type of shares</th>
+                <th>Updated No. of Shares</th>
+                <th>Change in shares</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={processedShareholders} for:item="shareholder">
+                <template if:true={shareholder.hasSecondRow}>
+                    <tr key={shareholder.id} class="double-row">
+                        <td rowspan="2">
+                            <template if:true={shareholder.isNew}>
+                                <span class="new-badge">New</span>
+                            </template>
+                            {shareholder.name}
+                        </td>
+                        <td rowspan="2">{shareholder.registrationNumber}</td>
+                        <td rowspan="2">{shareholder.country}</td>
+                        <td>{shareholder.typeOfShares}</td>
+                        <td>{shareholder.updatedShares}</td>
+                            <td class="change-cell">
+                                <template if:true={shareholder.changeInShares}>
+                                    <template if:true={shareholder.isNegativeChange}>
+                                        <span class="negative-change">{shareholder.changeInShares}</span>
+                                    </template>
+                                    <template if:false={shareholder.isNegativeChange}>
+                                        <span class="positive-change">+ {shareholder.changeInShares}</span>
+                                    </template>
+                                </template>
+                            </td>
+                            
+                    </tr>
+                    <tr key={shareholder.secondRowKey}>
+                        <td>{shareholder.secondRow.typeOfShares}</td>
+                        <td>{shareholder.secondRow.updatedShares}</td>
+                        <td></td>
+                    </tr>
+                </template>
+                
+                <template if:false={shareholder.hasSecondRow}>
+                    <tr key={shareholder.id}>
+                        <td>
+                            <template if:true={shareholder.isNew}>
+                                <span class="new-badge">New</span>
+                            </template>
+                            {shareholder.name}
+                        </td>
+                        <td>{shareholder.registrationNumber}</td>
+                        <td>{shareholder.country}</td>
+                        <td>{shareholder.typeOfShares}</td>
+                        <td>{shareholder.updatedShares}</td>
+                        <td>
+                            <template if:true={shareholder.changeInShares}>
+                                <template if:true={shareholder.isNegativeChange}>
+                                    <span class="negative-change">{shareholder.changeInShares}</span>
+                                </template>
+                                <template if:false={shareholder.isNegativeChange}>
+                                    <span class="positive-change">+ {shareholder.changeInShares}</span>
+                                </template>
+                            </template>
+                        </td>
+                        
+                    </tr>
+                </template>
+            </template>
+        </tbody>
+    </table>
+</div>
+
+<!-- Individual Shareholders Section -->
+<div class="shareholders-section">
+    <div class="section-header">
+        <h3>Individual Shareholders</h3>
+    </div>
+    
+    <table class="shareholders-table">
+        <thead class="individual-shareholders-table">
+            <tr>
+                <th class="individual-shareholders-table">Name</th>
+                <th class="individual-shareholders-table">Passport Number</th>
+                <th class="individual-shareholders-table">Nationality</th>
+                <th class="individual-shareholders-table">Type of shares</th>
+                <th class="individual-shareholders-table">No. of Shares</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={individualShareholders} for:item="shareholder">
+                <tr key={shareholder.id}>
+                    <td>{shareholder.name}</td>
+                    <td>{shareholder.passportNumber}</td>
+                    <td>{shareholder.nationality}</td>
+                    <td>{shareholder.typeOfShares}</td>
+                    <td>{shareholder.numberOfShares}</td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div>
+</div>
+</template>

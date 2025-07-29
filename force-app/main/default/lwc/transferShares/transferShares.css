@@ -11,23 +11,78 @@
     margin-bottom: 24px;
 }
 
-
-.form-row {
+/* Left and Right Section Layout */
+.form-section {
     display: flex;
-    gap: 24px;
-    margin-bottom: 20px;
+    gap: 16px;
+    align-items: flex-start;
 }
 
-.form-field{
+.left-section {
+    flex: 0 0 300px; /* Fixed width for left section */
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* Consistent gap */
+}
+
+.right-section {
+    flex: 0 0 300px; /* Fixed width for right section */
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* Consistent gap */
+}
+
+.form-field {
+    width: 100%;
+    height: auto;
+    margin: 0;
+}
+
+.form-field-2 {
+    width: 100%;
+    height: auto;
+    margin: 0;
+}
+
+.form-field-with-button {
     flex: 1;
-    min-width: 240px;
-    max-width: 300px;
-    height: 40px;
-
+    height: auto;
+    margin: 0;
 }
 
+.transfer-button-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: auto;
+    margin: 0;
+}
 
-/* 2. Match the TRANSFER button height */
+/* Remove second-row classes - use consistent gaps instead */
+.form-field.second-row {
+    margin-top: 0;
+}
+
+.transfer-button-container.second-row {
+    margin-top: 0;
+}
+
+.form-field-with-button lightning-input {
+    flex: 1;
+}
+
+/* Vertical Divider */
+.vertical-divider {
+    width: 1px;
+    background-color: #ccc;
+    height: auto;
+    min-height: 160px; /* Adjusted height to span both input rows */
+    flex-shrink: 0;
+    align-self: stretch;
+    margin-top: 8px; /* Small offset to align with form content */
+}
+
+/* Transfer Button Styles */
 .transfer-button {
     background-color: #e91e63;
     border: none;
@@ -40,40 +95,19 @@
     font-size: 14px;
     white-space: nowrap;
     flex-shrink: 0;
-    align-self: flex-end;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-bottom: 2px; /* Lift button 2px higher */
 }
 
 .transfer-button:hover {
     background-color: #c2185b;
 }
 
-/* 3. Container size fix */
-.form-field-2,
-.form-field-with-button {
-    flex: 1;
-    min-width: 150px;
-    max-width: 200px;
-    height: auto; /* let the internal components control height */
-}
-
-.form-field-with-button {
-    display: flex;
-    align-items: flex-end;
-    gap: 8px;
-    
-}
-.custom-input{
+.custom-input {
     --lwc-heightInput: 40px;
 }
-
-.form-field-with-button lightning-input {
-    flex: 1;
-}
-
-
 
 /* Shareholders Section Styles */
 .shareholders-section {
@@ -95,8 +129,6 @@
     color: #333;
 }
 
-/* Remove all N/R icon styles */
-
 /* Table Styles */
 .shareholders-table {
     width: 100%;
@@ -108,17 +140,6 @@
 .shareholders-table thead {
     background-color: #a8d8dc;
 }
-
-/* .shareholders-table th {
-    padding: 12px 16px;
-    text-align: left;
-    font-weight: 600;
-    color: #333;
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
-} */
-
 
 .shareholders-table td,
 .shareholders-table th {
@@ -132,7 +153,6 @@
     vertical-align: middle;
 }
 
-
 .shareholders-table th {
     background-color: #a8d8dc;
     font-weight: 600;
@@ -141,8 +161,8 @@
 
 .shareholders-table tr.double-row td {
     vertical-align: middle;
+    border-bottom: none;
 }
-
 
 .shareholders-table tbody tr:hover {
     background-color: #f8f9fa;
@@ -186,13 +206,34 @@
     font-weight: 600;
 }
 
+/* Remove bottom border for change cell in double-row layout */
+tr.double-row .change-cell {
+    border-bottom: none;
+}
+
+.individual-shareholders-table {
+    background-color: #aaa !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
-    .form-row {
+    .form-section {
         flex-direction: column;
         gap: 16px;
     }
     
+    .left-section,
+    .right-section {
+        flex: 1;
+        width: 100%;
+    }
+    
+    .vertical-divider {
+        width: 100%;
+        height: 1px;
+        margin: 8px 0;
+        min-height: 1px;
+    }
     
     .shareholders-table {
         font-size: 12px;
@@ -217,33 +258,4 @@
 .transfer-shares-container lightning-combobox:focus-within,
 .transfer-shares-container lightning-input:focus-within {
     --sds-c-input-color-border-focus: #0176d3;
-}
-
-.shareholders-table tr.double-row td {
-    border-bottom: none;
-}
-
-/* Remove bottom border for change cell in double-row layout */
-tr.double-row .change-cell {
-    border-bottom: none;
-}
-
-
-
-
-
-
-
-.vertical-divider {
-  width: 1px;
-  background-color: #ccc;
-  height: auto;
-  min-height: 100%;
-  margin: 0 16px;
-  margin-top: -20px;
-}
-
-
-.individual-shareholders-table{
-    background-color: #aaa !important; 
 }

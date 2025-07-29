@@ -1,10 +1,11 @@
 <template>
     <div class="transfer-shares-container">
         <!-- Transfer Form -->
-        <div class="transfer-form">
-            <div class="form-row">
-                <div class="form-field">
-                    <lightning-combobox
+<div class="transfer-form">
+    <div class="form-section">
+        <div class="left-section">
+            <div class="form-field">
+                <lightning-combobox
                     name="transferFrom"
                     label="Transfer From"
                     value={transferFrom}
@@ -15,53 +16,56 @@
                     required>
                 </lightning-combobox>
             </div>
-              <div class="vertical-divider" style="margin-top: 20px;"></div> <!-- 👈 Vertical break line -->
+            
+            <div class="form-field">
+                <lightning-combobox
+                    name="transferTo"
+                    label="Transfer To"
+                    value={transferTo}
+                    placeholder="Select Transfer To"
+                    options={transferToOptions}
+                    onchange={handleTransferToChange}
+                    class="custom-input"
+                    required>
+                </lightning-combobox>
+            </div>
+        </div>
+        
+        <div class="vertical-divider"></div>
+        
+        <div class="right-section">
             <div class="form-field-2">
                 <lightning-combobox
-                name="typeOfShares"
-                label="Type of shares"
-                value={typeOfShares}
-                placeholder="Select Share Type"
-                options={shareTypeOptions}
-                onchange={handleShareTypeChange}
-                class="custom-input"
-                required>
-            </lightning-combobox>
+                    name="typeOfShares"
+                    label="Type of shares"
+                    value={typeOfShares}
+                    placeholder="Select Share Type"
+                    options={shareTypeOptions}
+                    onchange={handleShareTypeChange}
+                    class="custom-input"
+                    required>
+                </lightning-combobox>
+            </div>
+            
+            <div class="transfer-button-container">
+                <div class="form-field-with-button">
+                    <lightning-input
+                        type="number"
+                        name="numberOfShares"
+                        label="No. of shares"
+                        value={numberOfShares}
+                        onchange={handleSharesNumberChange}
+                        placeholder="Enter number of shares"
+                        class="custom-input"
+                        required>
+                    </lightning-input>
+                </div>
+                <button class="transfer-button" onclick={handleTransfer}>
+                    TRANSFER
+                </button>
+            </div>
         </div>
     </div>
-    
-    <div class="form-row">
-        <div class="form-field">
-            <lightning-combobox
-            name="transferTo"
-            label="Transfer To"
-            value={transferTo}
-            placeholder="Select Transfer To"
-            options={transferToOptions}
-            onchange={handleTransferToChange}
-            class="custom-input"
-            required>
-        </lightning-combobox>
-    </div>
-      <div class="vertical-divider"></div> <!-- 👈 Vertical break line -->      
-
-    <div class="form-field-with-button">
-        <lightning-input
-        type="number"
-        name="numberOfShares"
-        label="No. of shares"
-        value={numberOfShares}
-        onchange={handleSharesNumberChange}
-        placeholder="Enter number of shares"
-        class="custom-input"
-        required>
-    </lightning-input>
-
-</div>  
-  <button class="transfer-button" onclick={handleTransfer}>
-        TRANSFER
-    </button>
-</div>
 </div>
 
 <!-- Corporate Shareholders Section -->
